@@ -17,6 +17,8 @@ if ( $botmode ) {
 require_once ( 'php/oauth.php' ) ;
 require_once ( 'php/common.php' ) ;
 
+$tool_hashtag = get_request ( 'tool_hashtag' , '' ) ;
+
 $oa = new MW_OAuth ( 'widar' , 'wikidata' , 'wikidata' ) ;
 
 switch ( isset( $_GET['action'] ) ? $_GET['action'] : '' ) {
@@ -977,6 +979,14 @@ function setDateClaim() {
 
 function addRow () { // ASSUMING BOTMODE
 	global $oa , $botmode , $out ;
+
+	$l = get_request ( "language" , '' ) ;
+	$p = get_request ( "project" , '' ) ;
+	
+	if ( $l != '' and $p != '' ) {
+		$oa = new MW_OAuth ( 'widar' , $l , $p ) ;
+	}
+	
 	
 	if ( !ensureAuth() ) return ;
 	show_header() ;
@@ -1010,6 +1020,13 @@ function deletePage () { // ASSUMING BOTMODE
 
 function appendText () { // ASSUMING BOTMODE
 	global $oa , $botmode , $out ;
+	
+	$l = get_request ( "language" , '' ) ;
+	$p = get_request ( "project" , '' ) ;
+	
+	if ( $l != '' and $p != '' ) {
+		$oa = new MW_OAuth ( 'widar' , $l , $p ) ;
+	}
 	
 	if ( !ensureAuth() ) return ;
 	show_header() ;
@@ -1056,9 +1073,9 @@ function logout () {
 function bot_out () {
 	global $out , $oa ;
 	if ( isset ( $oa->error ) ) $out['error'] = $oa->error ;
-	if ( isset($_REQUEST['callback']) ) print $_REQUEST['callback']."(" ;
+#	if ( isset($_REQUEST['callback']) ) print $_REQUEST['callback']."(" ;
 	print json_encode ( $out ) ;
-	if ( isset($_REQUEST['callback']) ) print ");" ;
+#	if ( isset($_REQUEST['callback']) ) print ");" ;
 }
 
 
@@ -1099,8 +1116,12 @@ if ( $botmode ) {
 	<li><a href='/wikidata-todo/autolist.html'>AutoList</a> and <a href='/wikidata-todo/autolist2.php'>AutoList 2</a></li>
 	<li><a href='/reasonator'>Reasonator</a></li>
 	<li><a href='/wikidata-todo/creator.html'>Wikidata item creator</a></li>
-	<li><a href='/wikidata-game/'>The Wikidata Game</a></li>
+	<li><a href='/wikidata-todo/quick_statements.php'>QuickStatements</a></li>
+	<li><a href='/wikidata-todo/duplicity.php'>Duplicity</a></li>
+	<li><a href='/wikidata-todo/tabernacle.html'>Tabernacle</a></li>
+	<li><a href='/wikidata-game/'>The Wikidata Game</a> and <a href='/wikidata-game/distributed'>The Distributed Game</a></li>
 	</ul>
+	<div style='margin-top:20px;border:1px solid #ddd;padding:5px;'>BREAKING CHANGE: JSONP functionality was deactivated due to safety concerns</div>
 	</div>" ;
 
 	print get_common_footer() ;
