@@ -5,10 +5,18 @@ ini_set('display_errors', 'On');
 
 $miser_mode = false ;
 
+/*
+header('Access-Control-Allow-Origin: http://petscan.wmflabs.org');  
+header('Access-Control-Allow-Origin: https://petscan.wmflabs.org');  
+header('Access-Control-Allow-Origin: http://petscan-dev.wmflabs.org');  
+header('Access-Control-Allow-Origin: https://petscan-dev.wmflabs.org');  
+*/
+
 $out = array ( 'error' => 'OK' , 'data' => array() ) ;
 $botmode = isset ( $_REQUEST['botmode'] ) ;
 if ( $botmode ) {
 	header ( 'application/json' ) ; // text/plain
+//	header('Access-Control-Allow-Origin: https://petscan-dev.wmflabs.org, http://petscan-dev.wmflabs.org, http://petscan.wmflabs.org, https://petscan.wmflabs.org');
 } else {
 	error_reporting(E_ERROR|E_CORE_ERROR|E_ALL|E_COMPILE_ERROR);
 	ini_set('display_errors', 'On');
@@ -1052,6 +1060,7 @@ function getRights () {
 	
 	if ( $botmode ) {
 		$out['result'] = $res ;
+#		$out['test'] = $_SERVER["HTTP_ORIGIN"] ;
 	} else {
 		print "<pre>" ; print_r ( $res ) ; print "</pre>" ;
 	}
@@ -1073,9 +1082,9 @@ function logout () {
 function bot_out () {
 	global $out , $oa ;
 	if ( isset ( $oa->error ) ) $out['error'] = $oa->error ;
-#	if ( isset($_REQUEST['callback']) ) print $_REQUEST['callback']."(" ;
+	if ( isset($_REQUEST['callback2']) ) print $_REQUEST['callback2']."(" ;
 	print json_encode ( $out ) ;
-#	if ( isset($_REQUEST['callback']) ) print ");" ;
+	if ( isset($_REQUEST['callback2']) ) print ");" ;
 }
 
 
@@ -1113,12 +1122,14 @@ if ( $botmode ) {
 
 	print "<div><h3>Tools using WiDaR</h3>
 	<ul>
+	<li><a href='https://petscan.wmflabs.org'>PetScan</a></li>
 	<li><a href='/wikidata-todo/autolist.html'>AutoList</a> and <a href='/wikidata-todo/autolist2.php'>AutoList 2</a></li>
 	<li><a href='/reasonator'>Reasonator</a></li>
 	<li><a href='/wikidata-todo/creator.html'>Wikidata item creator</a></li>
 	<li><a href='/wikidata-todo/quick_statements.php'>QuickStatements</a></li>
 	<li><a href='/wikidata-todo/duplicity.php'>Duplicity</a></li>
 	<li><a href='/wikidata-todo/tabernacle.html'>Tabernacle</a></li>
+	<li><a href='/mix-n-match'>Mix'n'match</a></li>
 	<li><a href='/wikidata-game/'>The Wikidata Game</a> and <a href='/wikidata-game/distributed'>The Distributed Game</a></li>
 	</ul>
 	<div style='margin-top:20px;border:1px solid #ddd;padding:5px;'>BREAKING CHANGE: JSONP functionality was deactivated due to safety concerns</div>
