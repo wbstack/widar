@@ -866,10 +866,10 @@ function setQuantityClaim() {
 
 	$id = trim ( get_request ( "id" , '' ) ) ;
 	$prop = get_request ( 'prop' , '' ) ;
-	$amount = get_request ( 'amount' , '' ) ;
-	$upper = get_request ( 'upper' , '' ) ;
-	$lower = get_request ( 'lower' , '' ) ;
-	$unit = get_request ( 'unit' , 1 ) * 1 ;
+	$amount = (string) get_request ( 'amount' , '' ) ;
+	$upper = (string) get_request ( 'upper' , '' ) ;
+	$lower = (string) get_request ( 'lower' , '' ) ;
+	$unit = get_request ( 'unit' , '1' ) ;
 	$qualifier_claim = get_request ( 'claim' , '' ) ;
 	
 	if ( $id == '' or $prop == '' or $amount == '' ) {
@@ -897,9 +897,9 @@ function setQuantityClaim() {
 
 	$claim = array (
 		"prop" => $prop ,
-		"amount" => $amount*1 ,
-		"upper" => $upper*1 ,
-		"lower" => $lower*1 ,
+		"amount" => $amount ,
+		"upper" => $upper ,
+		"lower" => $lower ,
 		"unit" => $unit ,
 		"type" => "quantity"
 	) ;
