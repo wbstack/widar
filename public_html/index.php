@@ -850,6 +850,7 @@ function genericAction () {
 
 	if ( $oa->genericAction ( $j ) ) {
 		if ( !$botmode ) print "done.\n" ;
+		else $out['last_res'] = $oa->last_res ;
 	} else {
 		$msg = "failed!" ;
 		$out['error2'] = $oa->error ;
@@ -1106,7 +1107,7 @@ if ( $botmode ) {
 	
 	
 	$res = $oa->getConsumerRights() ;
-//	print "<pre>" ;print_r ( $res ) ;print "</pre>" ;
+//	print "!<pre>" ;print_r ( $res ) ;print "</pre>" ;
 	if ( isset ( $res->error ) ) {
 		print "You have not authorized Widar to perform edits on Wikidata on your behalf. <a href='".htmlspecialchars( $_SERVER['SCRIPT_NAME'] )."?action=authorize'>Authorize WiDaR now</a>." ;
 	} else {
