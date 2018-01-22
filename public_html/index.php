@@ -614,6 +614,7 @@ function setString() {
 	$prop = get_request ( 'prop' , '' ) ;
 	$text = get_request ( 'text' , '' ) ;
 	$qualifier_claim = get_request ( 'claim' , '' ) ;
+	$summary = get_request ( 'summary' , '' ) ;
 	
 	if ( ( $id == '' and $qualifier_claim == '' ) or $prop == '' or $text == '' ) {
 		$msg = "Parameters incomplete." ;
@@ -643,7 +644,7 @@ function setString() {
 	if ( $qualifier_claim == '' ) $claim['q'] = $id ;
 	else $claim['claim'] = $qualifier_claim ;
 
-	if ( $oa->setClaim ( $claim ) ) {
+	if ( $oa->setClaim ( $claim , $summary ) ) {
 		if ( !$botmode ) print "done.\n" ;
 		else if ( isset($oa->last_res) ) $out['res'] = $oa->last_res ;
 	} else {
