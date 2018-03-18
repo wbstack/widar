@@ -1094,7 +1094,7 @@ function show_header() {
 	global $botmode ;
 	if ( $botmode ) return ;
 	print get_common_header ( '' , 'WiDaR' ) ;
-	print "<div style='float:right'><a href='//en.wikipedia.org/wiki/Widar' title='VÃ­Ã°arr, slaying the dragon of missing claims'><img border=0 src='https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Vidar_by_Collingwood.jpg/150px-Vidar_by_Collingwood.jpg' /></a></div>" ;
+	print "<div style='float:right'><a href='//en.wikipedia.org/wiki/Widar' title='Víðarr, slaying the dragon of missing claims'><img border=0 src='https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Vidar_by_Collingwood.jpg/150px-Vidar_by_Collingwood.jpg' /></a></div>" ;
 	print "<h1><i>Wi</i>ki<i>Da</i>ta <i>R</i>emote editor</h1>" ;
 }
 
@@ -1134,7 +1134,7 @@ if ( $botmode ) {
 	<li><a href='/mix-n-match'>Mix'n'match</a></li>
 	<li><a href='/wikidata-game/'>The Wikidata Game</a> and <a href='/wikidata-game/distributed'>The Distributed Game</a></li>
 	</ul>
-	<div style='margin-top:20px;border:1px solid #ddd;padding:5px;'>BREAKING CHANGE: JSONP functionality was deactivated due to safety concerns</div>
+	<div style='margin-top:20px;border:1px solid #ddd;padding:5px;'>BREAKING CHANGE: JSONP functionality was deactivated due to security concerns</div>
 	</div>" ;
 
 	print get_common_footer() ;
