@@ -1137,7 +1137,7 @@ if ( $botmode ) {
 	<li><a href='/wikidata-game/'>The Wikidata Game</a> and <a href='/wikidata-game/distributed'>The Distributed Game</a></li>
 	<li><a href='/topicmatcher/'>TopicMatcher</a></li>
 	</ul>
-	<div style='margin-top:20px;border:1px solid #ddd;padding:5px;'>BREAKING CHANGE: JSONP functionality was deactivated due to safety concerns</div>
+	<div style='margin-top:20px;border:1px solid #ddd;padding:5px;'>BREAKING CHANGE: JSONP functionality was deactivated due to security concerns</div>
 	</div>" ;
 
 	print get_common_footer() ;
