@@ -1096,7 +1096,7 @@ function show_header() {
 	global $botmode ;
 	if ( $botmode ) return ;
 	print get_common_header ( '' , 'WiDaR' ) ;
-	print "<div style='float:right'><a href='//en.wikipedia.org/wiki/Widar' title='VÃ­Ã°arr, slaying the dragon of missing claims'><img border=0 src='https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Vidar_by_Collingwood.jpg/150px-Vidar_by_Collingwood.jpg' /></a></div>" ;
+	print "<div style='float:right'><a href='//en.wikipedia.org/wiki/Widar' title='Víðarr, slaying the dragon of missing claims'><img border=0 src='https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Vidar_by_Collingwood.jpg/150px-Vidar_by_Collingwood.jpg' /></a></div>" ;
 	print "<h1><i>Wi</i>ki<i>Da</i>ta <i>R</i>emote editor</h1>" ;
 }
 
@@ -1127,14 +1127,15 @@ if ( $botmode ) {
 	print "<div><h3>Tools using WiDaR</h3>
 	<ul>
 	<li><a href='https://petscan.wmflabs.org'>PetScan</a></li>
-	<li><a href='/wikidata-todo/autolist.html'>AutoList</a> and <a href='/wikidata-todo/autolist2.php'>AutoList 2</a></li>
+	<li><a href='/wikidata-todo/autolist.html'>AutoList</a></li>
 	<li><a href='/reasonator'>Reasonator</a></li>
 	<li><a href='/wikidata-todo/creator.html'>Wikidata item creator</a></li>
-	<li><a href='/wikidata-todo/quick_statements.php'>QuickStatements</a></li>
+	<li><a href='/quickstatements'>QuickStatements</a></li>
 	<li><a href='/wikidata-todo/duplicity.php'>Duplicity</a></li>
 	<li><a href='/wikidata-todo/tabernacle.html'>Tabernacle</a></li>
 	<li><a href='/mix-n-match'>Mix'n'match</a></li>
 	<li><a href='/wikidata-game/'>The Wikidata Game</a> and <a href='/wikidata-game/distributed'>The Distributed Game</a></li>
+	<li><a href='/topicmatcher/'>TopicMatcher</a></li>
 	</ul>
 	<div style='margin-top:20px;border:1px solid #ddd;padding:5px;'>BREAKING CHANGE: JSONP functionality was deactivated due to safety concerns</div>
 	</div>" ;
