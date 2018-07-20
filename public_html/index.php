@@ -29,7 +29,7 @@ $tool_hashtag = get_request ( 'tool_hashtag' , '' ) ;
 
 $oa = new MW_OAuth ( 'widar' , 'wikidata' , 'wikidata' ) ;
 
-switch ( isset( $_GET['action'] ) ? $_GET['action'] : '' ) {
+switch ( isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : '' ) {
 	case 'authorize':
 		$oa->doAuthorizationRedirect();
 		exit ( 0 ) ;
@@ -847,8 +847,15 @@ function genericAction () {
 	if ( !ensureAuth() ) return ;
 	show_header() ;
 	
-	$j = json_decode ( get_request ( 'json' , '' ) ) ;
-
+	$json = get_request ( 'json' , '' ) ;
+	$j = json_decode ( $json ) ;
+/*
+	$out['params'] = $_REQUEST ;
+	$out['j'] = $j ;
+	$out['json'] = $json ;
+*/
+	$out['jle'] = json_last_error() ;
+	
 	$summary = get_request ( 'summary' , '' ) ;
 
 	if ( $oa->genericAction ( $j , $summary ) ) {
