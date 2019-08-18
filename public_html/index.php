@@ -2,6 +2,7 @@
 
 error_reporting(E_ERROR|E_CORE_ERROR|E_COMPILE_ERROR); # |E_ALL
 ini_set('display_errors', 'On');
+set_time_limit ( 3*60 ) ; // Seconds
 
 $miser_mode = false ;
 
@@ -1080,9 +1081,9 @@ function getRights () {
 
 function logout () {
 	global $oa , $botmode , $out ;
-	show_header() ;
 	
 	$oa->logout() ;
+	show_header() ;
 	
 	if ( $botmode ) {
 	} else {
@@ -1120,6 +1121,8 @@ if ( $botmode ) {
 //	print "!<pre>" ;print_r ( $res ) ;print "</pre>" ;
 	if ( isset ( $res->error ) ) {
 		print "You have not authorized Widar to perform edits on Wikidata on your behalf. <div><a class='btn btn-primary btn-large' href='".htmlspecialchars( $_SERVER['SCRIPT_NAME'] )."?action=authorize'>Authorize WiDaR now</a></div>" ;
+	} else if ( !isset($res) or !isset($res->query) ) {
+		print "The Wikidata API did not respond to a call in OAuth::getConsumerRights" ;
 	} else {
 		print "You have authorized WiDaR to edit as " . $res->query->userinfo->name . ". Congratulations! You can always log out <a href='?action=logout'>here</a>." ;
 	}
