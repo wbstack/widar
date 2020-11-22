@@ -1,16 +1,25 @@
 <?PHP
 
 error_reporting(E_ERROR|E_CORE_ERROR|E_COMPILE_ERROR); # |E_ALL
-ini_set('display_errors', 'On');
+//ini_set('display_errors', 'On');
 set_time_limit ( 3*60 ) ; // Seconds
+
+// Session INI settings START
+if(getenv('PHP_SESSION_SAVE_HANDLER')) {
+    ini_set( 'session.save_handler', getenv('PHP_SESSION_SAVE_HANDLER') );
+}
+if(getenv('PHP_SESSION_SAVE_PATH')) {
+    ini_set( 'session.save_path', getenv('PHP_SESSION_SAVE_PATH') );
+}
+// Session INI settings END
 
 $miser_mode = false ;
 
 /*
-header('Access-Control-Allow-Origin: http://petscan.wmflabs.org');  
-header('Access-Control-Allow-Origin: https://petscan.wmflabs.org');  
-header('Access-Control-Allow-Origin: http://petscan-dev.wmflabs.org');  
-header('Access-Control-Allow-Origin: https://petscan-dev.wmflabs.org');  
+header('Access-Control-Allow-Origin: http://petscan.wmflabs.org');
+header('Access-Control-Allow-Origin: https://petscan.wmflabs.org');
+header('Access-Control-Allow-Origin: http://petscan-dev.wmflabs.org');
+header('Access-Control-Allow-Origin: https://petscan-dev.wmflabs.org');
 */
 
 $out = array ( 'error' => 'OK' , 'data' => array() ) ;
@@ -28,14 +37,33 @@ require_once ( 'php/common.php' ) ;
 
 $tool_hashtag = get_request ( 'tool_hashtag' , '' ) ;
 
-$oa = new MW_OAuth ( 'widar' , 'wikidata' , 'wikidata' ) ;
+// $oa = new MW_OAuth ( 'widar' , 'wikidata' , 'wikidata' ) ;
+
+// WBStack customization START
+WbstackMagnusOauth::setOauthDetails(
+    'Widar',
+    '1.0.3',
+    [
+        'highvolume',
+        'editpage',
+        'createeditmovepage',
+        'rollback',
+        'delete',
+    ],
+    '/tools/widar/'
+);
+$oa = new MW_OAuth ( WbstackMagnusOauth::getOauthParams(
+    'widar',
+    '/tools/widar'
+) ) ;
+// WBStack customization END
 
 switch ( isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : '' ) {
 	case 'authorize':
 		$oa->doAuthorizationRedirect();
 		exit ( 0 ) ;
 		return;
-	
+
 	case 'remove_claim' :
 		removeClaim() ;
 		if ( $botmode ) bot_out() ;
@@ -112,8 +140,8 @@ switch ( isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : '' ) {
 		else print get_common_footer() ;
 		exit ( 0 ) ;
 		return ;
-		
-		
+
+
 	case 'set_sitelink':
 		setSitelink() ;
 		if ( $botmode ) bot_out() ;
@@ -148,14 +176,14 @@ switch ( isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : '' ) {
 		else print get_common_footer() ;
 		exit ( 0 ) ;
 		return ;
-	
+
 	case 'create_item_from_page':
 		createItemFromPage() ;
 		if ( $botmode ) bot_out() ;
 		else print get_common_footer() ;
 		exit ( 0 ) ;
 		return ;
-	
+
 	case 'add_source':
 		setSource() ;
 		if ( $botmode ) bot_out() ;
@@ -176,14 +204,14 @@ switch ( isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : '' ) {
 		else print get_common_footer() ;
 		exit ( 0 ) ;
 		return ;
-		
+
 	case 'append' :
 		appendText() ;
 		if ( $botmode ) bot_out() ;
 		else print get_common_footer() ;
 		exit ( 0 ) ;
 		return ;
-	
+
 	case 'generic' :
 		genericAction() ;
 		if ( $botmode ) bot_out() ;
@@ -206,7 +234,7 @@ function ensureAuth () {
 
 	if ( isset( $res->error->code ) && $res->error->code === 'mwoauth-invalid-authorization' ) {
 		// We're not authorized!
-		$msg = 'You haven\'t authorized this application yet! Go <a target="_blank" href="' . htmlspecialchars( $_SERVER['SCRIPT_NAME'] ) . '?action=authorize">here</a> to do that, then reload this page.' ;
+		$msg = 'You haven\'t authorized this application yet! Go <a target="_blank" href="?action=authorize">here</a> to do that, then reload this page.' ;
 		if ( $botmode ) $out['error'] = $msg ;
 		else echo $msg . '<hr>';
 		return false ;
@@ -234,13 +262,13 @@ function ensureAuth () {
 			exit(0);
 		}
 	}
-	
+
 	return true ;
 }
 
 function setLabel () {
 	global $oa , $botmode , $out ;
-	
+
 	// https://tools.wmflabs.org/widar/index.php?action=set_label&q=Q1980313&lang=en&label=New+Bach+monument+in+Leipzig&botmode=1
 
 	if ( !ensureAuth() ) return ;
@@ -249,7 +277,7 @@ function setLabel () {
 	$q = get_request ( 'q' , '' ) ;
 	$lang = get_request ( 'lang' , '' ) ;
 	$label = get_request ( 'label' , '' ) ;
-	
+
 	if ( $q == '' or $lang == '' ) { //or $label == '' ) {
 		$msg = "Needs q, lang, label" ;
 		if ( $botmode ) $out['error'] = $msg ;
@@ -270,7 +298,7 @@ function setLabel () {
 
 function setDesc () {
 	global $oa , $botmode , $out ;
-	
+
 	// https://tools.wmflabs.org/widar/index.php?action=set_label&q=Q1980313&lang=en&label=New+Bach+monument+in+Leipzig&botmode=1
 
 	if ( !ensureAuth() ) return ;
@@ -279,7 +307,7 @@ function setDesc () {
 	$q = get_request ( 'q' , '' ) ;
 	$lang = get_request ( 'lang' , '' ) ;
 	$label = get_request ( 'label' , '' ) ;
-	
+
 	if ( $q == '' or $lang == '' ) { //or $label == '' ) {
 		$msg = "Needs q, lang, label" ;
 		if ( $botmode ) $out['error'] = $msg ;
@@ -300,7 +328,7 @@ function setDesc () {
 
 function set_Alias () {
 	global $oa , $botmode , $out ;
-	
+
 	// https://tools.wmflabs.org/widar/index.php?action=set_label&q=Q1980313&lang=en&label=New+Bach+monument+in+Leipzig&botmode=1
 
 	if ( !ensureAuth() ) return ;
@@ -310,7 +338,7 @@ function set_Alias () {
 	$lang = get_request ( 'lang' , '' ) ;
 	$label = get_request ( 'label' , '' ) ;
 	$mode = get_request ( 'mode' , 'add' ) ;
-	
+
 	if ( $q == '' or $lang == '' or $label == '' ) {
 		$msg = "Needs q, lang, label [, mode=add/set/remove]" ;
 		if ( $botmode ) $out['error'] = $msg ;
@@ -355,14 +383,14 @@ function createItemFromPage() {
 
 	$site = get_request ( 'site' , '' ) ;
 	$page = get_request ( 'page' , '' ) ;
-	
+
 	if ( $site == '' or $page == '' ) {
 		$msg = "Needs site and page" ;
 		if ( $botmode ) $out['error'] = $msg ;
 		else print "<pre>$msg</pre>" ;
 		return ;
 	}
-	
+
 	if ( !$oa->createItemFromPage ( $site , $page ) ) {
 		$msg = "Problem creating item" ;
 		if ( $botmode ) $out['error'] = $msg ;
@@ -377,20 +405,20 @@ function createItemFromPage() {
 
 function removeClaim () {
 	global $oa , $botmode , $miser_mode ;
-	
+
 	if ( !ensureAuth() ) return ;
 	show_header() ;
 
 	$id = trim ( get_request ( "id" , '' ) ) ;
 	$baserev = get_request ( 'baserev' , '' ) ;
-	
+
 	if ( $id == '' ) {
 		$msg = "Parameters incomplete." ;
 		if ( $botmode ) $out['error'] = $msg ;
 		else print "<pre>$msg</pre>" ;
 		return ;
 	}
-	
+
 	if ( !$botmode ) {
 		print "<div>Processing claim removal...</div>" ;
 		print "<ol>" ;
@@ -401,7 +429,7 @@ function removeClaim () {
 		print "<li>Removing $id ... " ;
 		myflush() ;
 	}
-	
+
 	if ( $miser_mode ) {
 		if ( !$botmode ) {
 			print " [delaying edit 5 seconds - temporary measure to not overload Wikidata-Wikipedia sync] " ;
@@ -433,26 +461,26 @@ function removeClaim () {
 
 function createRedirect () {
 	global $oa , $botmode , $miser_mode , $out ;
-	
+
 	if ( !ensureAuth() ) return ;
 	show_header() ;
 
 	$q_from = trim ( get_request ( "from" , '' ) ) ;
 	$q_to = trim ( get_request ( "to" , '' ) ) ;
-	
+
 	if ( $q_from == '' or $q_to == '' ) {
 		$msg = "Parameters incomplete." ;
 		if ( $botmode ) $out['error'] = $msg ;
 		else print "<pre>$msg</pre>" ;
 		return ;
 	}
-	
+
 	if ( !$botmode ) {
 		print "<div>Processing merging...</div>" ;
 		print "<ol>" ;
 		myflush();
 	}
-	
+
 	if ( $miser_mode ) {
 		if ( !$botmode ) {
 			print " [delaying edit 5 seconds - temporary measure to not overload Wikidata-Wikipedia sync] " ;
@@ -487,26 +515,26 @@ function createRedirect () {
 
 function mergeItems () {
 	global $oa , $botmode , $miser_mode , $out ;
-	
+
 	if ( !ensureAuth() ) return ;
 	show_header() ;
 
 	$q_from = trim ( get_request ( "from" , '' ) ) ;
 	$q_to = trim ( get_request ( "to" , '' ) ) ;
-	
+
 	if ( $q_from == '' or $q_to == '' ) {
 		$msg = "Parameters incomplete." ;
 		if ( $botmode ) $out['error'] = $msg ;
 		else print "<pre>$msg</pre>" ;
 		return ;
 	}
-	
+
 	if ( !$botmode ) {
 		print "<div>Processing merging...</div>" ;
 		print "<ol>" ;
 		myflush();
 	}
-	
+
 	if ( $miser_mode ) {
 		if ( !$botmode ) {
 			print " [delaying edit 5 seconds - temporary measure to not overload Wikidata-Wikipedia sync] " ;
@@ -538,7 +566,7 @@ function mergeItems () {
 
 function setClaims() {
 	global $oa , $botmode , $miser_mode , $out ;
-	
+
 	if ( !ensureAuth() ) return ;
 	show_header() ;
 
@@ -546,14 +574,14 @@ function setClaims() {
 	$prop = get_request ( 'prop' , '' ) ;
 	$target = get_request ( 'target' , '' ) ;
 	$qualifier_claim = get_request ( 'claim' , '' ) ;
-	
+
 	if ( count($ids) == 0 or $prop == '' or $target == '' ) {
 		$msg = "Parameters incomplete." ;
 		if ( $botmode ) $out['error'] = $msg ;
 		else print "<pre>$msg</pre>" ;
 		return ;
 	}
-	
+
 	if ( !$botmode ) {
 		print "<div>Batch-processing " . count($ids) . " items...</div>" ;
 		print "<ol>" ;
@@ -567,7 +595,7 @@ function setClaims() {
 			print "<li><a href='//www.wikidata.org/wiki/$id'>$id</a> : $prop => $target ... " ;
 			myflush() ;
 		}
-		
+
 		if ( $miser_mode ) {
 			if ( !$botmode ) {
 				print " [delaying edit 5 seconds - temporary measure to not overload Wikidata-Wikipedia sync] " ;
@@ -582,10 +610,10 @@ function setClaims() {
 			"target" => $target ,
 			"type" => "item"
 		) ;
-		
+
 		if ( $qualifier_claim == '' ) $claim['q'] = $id ;
 		else $claim['claim'] = $qualifier_claim ;
-	
+
 		if ( $oa->setClaim ( $claim ) ) {
 			if ( !$botmode ) print "done.\n" ;
 			else if ( isset($oa->last_res) ) $out['res'] = $oa->last_res ;
@@ -598,7 +626,7 @@ function setClaims() {
 			print "</li>" ;
 			myflush() ;
 		}
-		
+
 	}
 	if ( !$botmode ) print "</ol>" ;
 
@@ -607,7 +635,7 @@ function setClaims() {
 
 function setString() {
 	global $oa , $botmode , $out ;
-	
+
 	if ( !ensureAuth() ) return ;
 	show_header() ;
 
@@ -616,14 +644,14 @@ function setString() {
 	$text = get_request ( 'text' , '' ) ;
 	$qualifier_claim = get_request ( 'claim' , '' ) ;
 	$summary = get_request ( 'summary' , '' ) ;
-	
+
 	if ( ( $id == '' and $qualifier_claim == '' ) or $prop == '' or $text == '' ) {
 		$msg = "Parameters incomplete." ;
 		if ( $botmode ) $out['error'] = $msg ;
 		else print "<pre>$msg</pre>" ;
 		return ;
 	}
-	
+
 	if ( !$botmode ) {
 		print "<div>Processing items $id...</div>" ;
 		print "<ol>" ;
@@ -664,7 +692,7 @@ function setString() {
 
 function setMonolang() {
 	global $oa , $botmode , $out ;
-	
+
 	if ( !ensureAuth() ) return ;
 	show_header() ;
 
@@ -673,14 +701,14 @@ function setMonolang() {
 	$text = get_request ( 'text' , '' ) ;
 	$language = get_request ( 'language' , '' ) ;
 	$qualifier_claim = get_request ( 'claim' , '' ) ;
-	
+
 	if ( $id == '' or $prop == '' or $text == '' or $language == '' ) {
 		$msg = "Parameters incomplete." ;
 		if ( $botmode ) $out['error'] = $msg ;
 		else print "<pre>$msg</pre>" ;
 		return ;
 	}
-	
+
 	if ( !$botmode ) {
 		print "<div>Processing items $id...</div>" ;
 		print "<ol>" ;
@@ -702,7 +730,7 @@ function setMonolang() {
 
 	if ( $qualifier_claim == '' ) $claim['q'] = $id ;
 	else $claim['claim'] = $qualifier_claim ;
-	
+
 //	print_r ( $claim ) ;
 
 	if ( $oa->setClaim ( $claim ) ) {
@@ -724,14 +752,14 @@ function setMonolang() {
 
 function setSitelink() {
 	global $oa , $botmode , $out ;
-	
+
 	if ( !ensureAuth() ) return ;
 	show_header() ;
 
 	$q = get_request ( 'q' , '' ) ;
 	$site = get_request ( 'site' , '' ) ;
 	$title = get_request ( 'title' , '' ) ;
-	
+
 	if ( $q == '' or $site == '' or $title == '' ) {
 		$msg = "Parameters incomplete." ;
 		if ( $botmode ) $out['error'] = $msg ;
@@ -754,13 +782,13 @@ function setSitelink() {
 
 function setSource () {
 	global $oa , $botmode , $out ;
-	
+
 	if ( !ensureAuth() ) return ;
 	show_header() ;
 
 	$statement = get_request ( 'statement' , '' ) ;
 	$snaks = get_request ( 'snaks' , '' ) ; // JSON text!
-	
+
 	if ( $statement == '' or $snaks == '' ) {
 		$msg = "Parameters incomplete." ;
 		if ( $botmode ) $out['error'] = $msg ;
@@ -784,7 +812,7 @@ function setSource () {
 
 function setLocationClaim() {
 	global $oa , $botmode , $out ;
-	
+
 	if ( !ensureAuth() ) return ;
 	show_header() ;
 
@@ -793,14 +821,14 @@ function setLocationClaim() {
 	$lat = get_request ( 'lat' , '' ) ;
 	$lon = get_request ( 'lon' , '' ) ;
 	$qualifier_claim = get_request ( 'claim' , '' ) ;
-	
+
 	if ( $id == '' or $prop == '' or $lat == '' or $lon == '' ) {
 		$msg = "Parameters incomplete." ;
 		if ( $botmode ) $out['error'] = $msg ;
 		else print "<pre>$msg</pre>" ;
 		return ;
 	}
-	
+
 	if ( !$botmode ) {
 		print "<div>Processing items $id...</div>" ;
 		print "<ol>" ;
@@ -822,7 +850,7 @@ function setLocationClaim() {
 
 	if ( $qualifier_claim == '' ) $claim['q'] = $id ;
 	else $claim['claim'] = $qualifier_claim ;
-	
+
 //	print_r ( $claim ) ;
 
 	if ( $oa->setClaim ( $claim ) ) {
@@ -844,10 +872,10 @@ function setLocationClaim() {
 
 function genericAction () {
 	global $oa , $botmode , $out ;
-	
+
 	if ( !ensureAuth() ) return ;
 	show_header() ;
-	
+
 	$json = get_request ( 'json' , '' ) ;
 	$j = json_decode ( $json ) ;
 /*
@@ -856,7 +884,7 @@ function genericAction () {
 	$out['json'] = $json ;
 */
 	$out['jle'] = json_last_error() ;
-	
+
 	$summary = get_request ( 'summary' , '' ) ;
 
 	if ( $oa->genericAction ( $j , $summary ) ) {
@@ -872,7 +900,7 @@ function genericAction () {
 
 function setQuantityClaim() {
 	global $oa , $botmode , $out ;
-	
+
 	if ( !ensureAuth() ) return ;
 	show_header() ;
 
@@ -883,14 +911,14 @@ function setQuantityClaim() {
 	$lower = (string) get_request ( 'lower' , '' ) ;
 	$unit = get_request ( 'unit' , '1' ) ;
 	$qualifier_claim = get_request ( 'claim' , '' ) ;
-	
+
 	if ( $id == '' or $prop == '' or $amount == '' ) {
 		$msg = "Parameters incomplete." ;
 		if ( $botmode ) $out['error'] = $msg ;
 		else print "<pre>$msg</pre>" ;
 		return ;
 	}
-	
+
 	if ( !$botmode ) {
 		print "<div>Processing items $id...</div>" ;
 		print "<ol>" ;
@@ -901,7 +929,7 @@ function setQuantityClaim() {
 		print "<li><a href='//www.wikidata.org/wiki/$id'>$id</a> : $prop => $amount ... " ;
 		myflush() ;
 	}
-	
+
 	if ( $upper == '' and $lower == '' ) {
 		$upper = $amount ;
 		$lower = $amount ;
@@ -918,7 +946,7 @@ function setQuantityClaim() {
 
 	if ( $qualifier_claim == '' ) $claim['q'] = $id ;
 	else $claim['claim'] = $qualifier_claim ;
-	
+
 //	print_r ( $claim ) ;
 
 	if ( $oa->setClaim ( $claim ) ) {
@@ -939,7 +967,7 @@ function setQuantityClaim() {
 
 function setDateClaim() {
 	global $oa , $botmode , $out ;
-	
+
 	if ( !ensureAuth() ) return ;
 	show_header() ;
 
@@ -948,14 +976,14 @@ function setDateClaim() {
 	$date = get_request ( 'date' , '' ) ;
 	$prec = get_request ( 'prec' , '' ) ;
 	$qualifier_claim = get_request ( 'claim' , '' ) ;
-	
+
 	if ( $id == '' or $prop == '' or $date == '' or $prec == '' ) {
 		$msg = "Parameters incomplete." ;
 		if ( $botmode ) $out['error'] = $msg ;
 		else print "<pre>$msg</pre>" ;
 		return ;
 	}
-	
+
 	if ( !$botmode ) {
 		print "<div>Processing items $id...</div>" ;
 		print "<ol>" ;
@@ -977,7 +1005,7 @@ function setDateClaim() {
 
 	if ( $qualifier_claim == '' ) $claim['q'] = $id ;
 	else $claim['claim'] = $qualifier_claim ;
-	
+
 //	print_r ( $claim ) ;
 
 	if ( $oa->setClaim ( $claim ) ) {
@@ -1002,12 +1030,12 @@ function addRow () { // ASSUMING BOTMODE
 
 	$l = get_request ( "language" , '' ) ;
 	$p = get_request ( "project" , '' ) ;
-	
+
 	if ( $l != '' and $p != '' ) {
 		$oa = new MW_OAuth ( 'widar' , $l , $p ) ;
 	}
-	
-	
+
+
 	if ( !ensureAuth() ) return ;
 	show_header() ;
 
@@ -1015,39 +1043,39 @@ function addRow () { // ASSUMING BOTMODE
 	$row = trim ( get_request ( "row" , '' ) ) ;
 	$text = file_get_contents ( 'http://www.wikidata.org/w/index.php?action=raw&title='.urlencode($page) ) ;
 	$text = trim ( $text ) . "\n" . $row ;
-	
+
 	if ( ! $oa->setPageText ( $page , $text ) ) {
 		$out['error'] = $oa->error ;
 	}
-	
+
 }
 
 function deletePage () { // ASSUMING BOTMODE
 	global $oa , $botmode , $out ;
-	
+
 	if ( !ensureAuth() ) return ;
 	show_header() ;
 
 	$page = trim ( get_request ( "page" , '' ) ) ;
 	$reason = trim ( get_request ( "reason" , '' ) ) ;
-	
+
 	if ( ! $oa->deletePage ( $page , $reason ) ) {
 		$out['error'] = $oa->error ;
 	}
-	
+
 }
 
 
 function appendText () { // ASSUMING BOTMODE
 	global $oa , $botmode , $out ;
-	
+
 	$l = get_request ( "language" , '' ) ;
 	$p = get_request ( "project" , '' ) ;
-	
+
 	if ( $l != '' and $p != '' ) {
 		$oa = new MW_OAuth ( 'widar' , $l , $p ) ;
 	}
-	
+
 	if ( !ensureAuth() ) return ;
 	show_header() ;
 
@@ -1056,35 +1084,35 @@ function appendText () { // ASSUMING BOTMODE
 	$header = get_request ( "header" , '' ) ;
 	$summary = get_request ( 'summary' , '' ) ;
 	$section = get_request ( 'section' , '' ) ;
-	
+
 	if ( ! $oa->addPageText ( $page , $text , $header , $summary , $section ) ) {
 		$out['error'] = $oa->error ;
 	}
-	
+
 }
 
 
 function getRights () {
 	global $oa , $botmode , $out ;
 	show_header() ;
-	
+
 	$res = $oa->getConsumerRights() ;
-	
+
 	if ( $botmode ) {
 		$out['result'] = $res ;
 #		$out['test'] = $_SERVER["HTTP_ORIGIN"] ;
 	} else {
 		print "<pre>" ; print_r ( $res ) ; print "</pre>" ;
 	}
-	
+
 }
 
 function logout () {
 	global $oa , $botmode , $out ;
-	
+
 	$oa->logout() ;
 	show_header() ;
-	
+
 	if ( $botmode ) {
 	} else {
 		print "<pre>Logged out</pre>" ;
@@ -1104,7 +1132,7 @@ function show_header() {
 	global $botmode ;
 	if ( $botmode ) return ;
 	print get_common_header ( '' , 'WiDaR' ) ;
-	print "<div style='float:right'><a href='//en.wikipedia.org/wiki/Widar' title='Víðarr, slaying the dragon of missing claims'><img border=0 src='https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Vidar_by_Collingwood.jpg/150px-Vidar_by_Collingwood.jpg' /></a></div>" ;
+	print "<div style='float:right'><a href='//en.wikipedia.org/wiki/Widar' title='Vï¿½ï¿½arr, slaying the dragon of missing claims'><img border=0 src='https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Vidar_by_Collingwood.jpg/150px-Vidar_by_Collingwood.jpg' /></a></div>" ;
 	print "<h1><i>Wi</i>ki<i>Da</i>ta <i>R</i>emote editor</h1>" ;
 }
 
@@ -1115,39 +1143,48 @@ if ( $botmode ) {
 } else {
 	print "<div style='margin-bottom:20px'>This is a tool that is used by other tools; it does not have an interface of its own. It can perform batch edits on WikiData under your user name using <a target='_blank' href='https://blog.wikimedia.org/2013/11/22/oauth-on-wikimedia-wikis/'>OAuth</a>.</div>" ;
 	print "<div>" ;
-	
-	
+
+
 	$res = $oa->getConsumerRights() ;
 //	print "!<pre>" ;print_r ( $res ) ;print "</pre>" ;
 	if ( isset ( $res->error ) ) {
-		print "You have not authorized Widar to perform edits on Wikidata on your behalf. <div><a class='btn btn-primary btn-large' href='".htmlspecialchars( $_SERVER['SCRIPT_NAME'] )."?action=authorize'>Authorize WiDaR now</a></div>" ;
+		print "You have not authorized Widar to perform edits on Wikidata on your behalf. <div><a class='btn btn-primary btn-large' href='?action=authorize'>Authorize WiDaR now</a></div>" ;
 	} else if ( !isset($res) or !isset($res->query) ) {
 		print "The Wikidata API did not respond to a call in OAuth::getConsumerRights" ;
 	} else {
 		print "You have authorized WiDaR to edit as " . $res->query->userinfo->name . ". Congratulations! You can always log out <a href='?action=logout'>here</a>." ;
 	}
-	
-	
-	print "</div>" ;
-	
-	
-	
-	//print "<div><a href='".htmlspecialchars( $_SERVER['SCRIPT_NAME'] )."?action=edit'>Edit</a></div>" ;
 
+
+	print "</div>" ;
+
+
+
+	//print "<div><a href='".htmlspecialchars( $_SERVER['REQUEST_URI'] )."?action=edit'>Edit</a></div>" ;
+
+//	print "<div><h3>Tools using WiDaR</h3>
+//	<ul>
+//	<li><a href='https://petscan.wmflabs.org'>PetScan</a></li>
+//	<li><a href='/wikidata-todo/autolist.html'>AutoList</a></li>
+//	<li><a href='/reasonator'>Reasonator</a></li>
+//	<li><a href='/wikidata-todo/creator.html'>Wikidata item creator</a></li>
+//	<li><a href='/quickstatements'>QuickStatements</a></li>
+//	<li><a href='/wikidata-todo/duplicity.php'>Duplicity</a></li>
+//	<li><a href='/wikidata-todo/tabernacle.html'>Tabernacle</a></li>
+//	<li><a href='/mix-n-match'>Mix'n'match</a></li>
+//	<li><a href='/wikidata-game/'>The Wikidata Game</a> and <a href='/wikidata-game/distributed'>The Distributed Game</a></li>
+//	<li><a href='/topicmatcher/'>TopicMatcher</a></li>
+//	</ul>
+//	<div style='margin-top:20px;border:1px solid #ddd;padding:5px;'>BREAKING CHANGE: JSONP functionality was deactivated due to security concerns</div>
+//	</div>" ;
+
+    // People land here after authing a tool, so for now provide a remporary list of tools
+    // TODO in the future redirect the user back to the tool....
 	print "<div><h3>Tools using WiDaR</h3>
 	<ul>
-	<li><a href='https://petscan.wmflabs.org'>PetScan</a></li>
-	<li><a href='/wikidata-todo/autolist.html'>AutoList</a></li>
-	<li><a href='/reasonator'>Reasonator</a></li>
-	<li><a href='/wikidata-todo/creator.html'>Wikidata item creator</a></li>
-	<li><a href='/quickstatements'>QuickStatements</a></li>
-	<li><a href='/wikidata-todo/duplicity.php'>Duplicity</a></li>
-	<li><a href='/wikidata-todo/tabernacle.html'>Tabernacle</a></li>
-	<li><a href='/mix-n-match'>Mix'n'match</a></li>
-	<li><a href='/wikidata-game/'>The Wikidata Game</a> and <a href='/wikidata-game/distributed'>The Distributed Game</a></li>
-	<li><a href='/topicmatcher/'>TopicMatcher</a></li>
+	<li><a href='/tools/cradle'>Cradle</a></li>
+	<li><a href='/tools/quickstatements'>QuickStatements</a></li>
 	</ul>
-	<div style='margin-top:20px;border:1px solid #ddd;padding:5px;'>BREAKING CHANGE: JSONP functionality was deactivated due to security concerns</div>
 	</div>" ;
 
 	print get_common_footer() ;
