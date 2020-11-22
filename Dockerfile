@@ -15,7 +15,7 @@ RUN pecl install redis-4.0.1 && docker-php-ext-enable redis
 COPY docker/entrypoint.sh /entrypoint.sh
 COPY docker/php.ini /usr/local/etc/php/conf.d/php.ini
 
-COPY --from=composer /installing/public_html /usr/share/nginx/html
+COPY --from=composer /installing/public_html /var/www/html
 
 ENTRYPOINT ["/bin/bash"]
 CMD ["/entrypoint.sh"]
