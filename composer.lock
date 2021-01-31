@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/wbstack/magnustools.git",
-                "reference": "90e79b27777aa0bf59ba6034e98d826902f0e2b3"
+                "reference": "7ea40cdb49b5e2a5e8e44e7afa254405bc9fdc58"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wbstack/magnustools/zipball/90e79b27777aa0bf59ba6034e98d826902f0e2b3",
-                "reference": "90e79b27777aa0bf59ba6034e98d826902f0e2b3",
+                "url": "https://api.github.com/repos/wbstack/magnustools/zipball/7ea40cdb49b5e2a5e8e44e7afa254405bc9fdc58",
+                "reference": "7ea40cdb49b5e2a5e8e44e7afa254405bc9fdc58",
                 "shasum": ""
             },
             "require": {
@@ -49,7 +49,7 @@
                 "source": "https://github.com/wbstack/magnustools/tree/main",
                 "issues": "https://github.com/wbstack/magnustools/issues"
             },
-            "time": "2021-01-31T12:10:11+00:00"
+            "time": "2021-01-31T12:21:33+00:00"
         }
     ],
     "packages-dev": [],
