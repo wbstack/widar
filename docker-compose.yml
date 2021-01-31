@@ -1,0 +1,10 @@
+version: '3.3'
+services:
+  widar:
+    build: .
+    volumes:
+    - ./public_html/resources:/var/www/html/html/resources
+    - ./public_html/php:/var/www/html/php
+    - ./public_html/index.php:/var/www/html/html/index.php
+    ports:
+      - 8086:80
