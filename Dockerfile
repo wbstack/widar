@@ -6,7 +6,7 @@ COPY ./ /installing
 RUN composer install --no-dev --no-progress --no-autoloader && rm -rf vendor
 
 
-FROM php:7.2-apache
+FROM php:8.0.10-apache
 
 LABEL org.opencontainers.image.source="https://github.com/wbstack/widar"
 
