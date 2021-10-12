@@ -11,6 +11,16 @@ if(getenv('PHP_SESSION_SAVE_HANDLER')) {
 if(getenv('PHP_SESSION_SAVE_PATH')) {
     ini_set( 'session.save_path', getenv('PHP_SESSION_SAVE_PATH') );
 }
+if(
+getenv('PHP_SESSION_SAVE_HANDLER') == "redis" &&
+getenv('PHP_SESSION_SAVE_HANDLER_REDIS_HOST') &&
+getenv('PHP_SESSION_SAVE_HANDLER_REDIS_PORT') &&
+getenv('PHP_SESSION_SAVE_HANDLER_REDIS_DATABASE') &&
+getenv('PHP_SESSION_SAVE_HANDLER_REDIS_AUTH') &&
+getenv('PHP_SESSION_SAVE_HANDLER_REDIS_PREFIX')
+){
+    ini_set( 'session.save_path', "tcp://".getenv('PHP_SESSION_SAVE_HANDLER_REDIS_HOST').":".getenv('PHP_SESSION_SAVE_HANDLER_REDIS_PORT')."?database=".getenv('PHP_SESSION_SAVE_HANDLER_REDIS_DATABASE')."&auth=".getenv('PHP_SESSION_SAVE_HANDLER_REDIS_AUTH')."&prefix=".getenv('PHP_SESSION_SAVE_HANDLER_REDIS_PREFIX') );
+}
 // Session INI settings END
 
 $botmode = isset ( $_REQUEST['botmode'] ) ;
