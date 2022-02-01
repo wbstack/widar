@@ -1,4 +1,7 @@
-# widar# widar
+# widar
+
+## Feburary 2022
+- 1.3 - Update OAuth consumer version in magnustools
 
 ## January 2021
 
