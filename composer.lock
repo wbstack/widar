@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/wbstack/magnustools.git",
-                "reference": "785d4965a672a5d9e7b82cc20d3f18186186223d"
+                "reference": "a2bfea66f736858f6d3ad70060ce227a37d9f3ce"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wbstack/magnustools/zipball/785d4965a672a5d9e7b82cc20d3f18186186223d",
-                "reference": "785d4965a672a5d9e7b82cc20d3f18186186223d",
+                "url": "https://api.github.com/repos/wbstack/magnustools/zipball/a2bfea66f736858f6d3ad70060ce227a37d9f3ce",
+                "reference": "a2bfea66f736858f6d3ad70060ce227a37d9f3ce",
                 "shasum": ""
             },
             "require": {
@@ -47,10 +47,9 @@
             "description": "Useful classes for Wikimedia Toolforge",
             "homepage": "https://bitbucket.com/magnusmanske/magnustools",
             "support": {
-                "source": "https://github.com/wbstack/magnustools/tree/main",
-                "issues": "https://github.com/wbstack/magnustools/issues"
+                "source": "https://github.com/wbstack/magnustools/tree/main"
             },
-            "time": "2022-01-31T17:41:52+00:00"
+            "time": "2024-02-15T09:36:39+00:00"
         }
     ],
     "packages-dev": [],
@@ -63,5 +62,5 @@
     "prefer-lowest": false,
     "platform": [],
     "platform-dev": [],
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "2.3.0"
 }

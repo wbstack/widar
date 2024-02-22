@@ -33,7 +33,7 @@ header('Access-Control-Allow-Origin: https://petscan-dev.wmflabs.org');
 */
 
 require_once ( 'php/Widar.php' ) ;
-$widar = new Widar ( 'widar' ) ;
+$widar = new Widar ( 'widar', 60*60*24*30*3 ); // make all cookies expire in three months
 if ( !$widar->render_reponse ( $botmode ) ) $widar->output_widar_main_page () ;
 
 ?>
