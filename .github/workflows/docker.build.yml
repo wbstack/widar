@@ -4,9 +4,8 @@ on:
   push:
     branches:
       - 'main'
-    tags:
-      - '*'
   pull_request:
+  workflow_dispatch:
 
 jobs:
   docker-build:
@@ -21,6 +20,8 @@ jobs:
         uses: crazy-max/ghaction-docker-meta@v3.6.0
         with:
           images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=sha
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v1.2.0
