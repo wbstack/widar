@@ -12,6 +12,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       -
+        name: Block workflow_dispatch on main branch
+        if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
+        run: |
+          echo "This workflow can not be triggered with workflow_dispatch on the main branch"
+          exit 1
+      -
         name: Checkout
         uses: actions/checkout@v2.3.5
       -
