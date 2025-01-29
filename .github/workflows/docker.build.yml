@@ -5,18 +5,11 @@ on:
     branches:
       - 'main'
   pull_request:
-  workflow_dispatch:
 
 jobs:
   docker-build:
     runs-on: ubuntu-latest
     steps:
-      -
-        name: Block workflow_dispatch on main branch
-        if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
-        run: |
-          echo "This workflow can not be triggered with workflow_dispatch on the main branch"
-          exit 1
       -
         name: Checkout
         uses: actions/checkout@v2.3.5
@@ -45,7 +38,6 @@ jobs:
       -
         name: Login to GitHub Container Registry
         uses: docker/login-action@v1.10.0
-        if: github.event_name != 'pull_request'
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
@@ -59,6 +51,6 @@ jobs:
           platforms: linux/amd64
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache
-          push: ${{ github.event_name != 'pull_request' }}
+          push: true
           tags: ${{ steps.docker_meta.outputs.tags }}
           labels: ${{ steps.docker_meta.outputs.labels }}
