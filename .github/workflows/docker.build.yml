@@ -55,6 +55,20 @@ jobs:
           tags: ${{ steps.docker_meta.outputs.tags }}
           labels: ${{ steps.docker_meta.outputs.labels }}
       -
+        name: Check out `wmde/wbaas-deploy` repository in staging child directory
+        if: github.event_name != 'pull_request'
+        uses: actions/checkout@v3.5.3
+        with:
+          repository: wmde/wbaas-deploy
+          path: ./repos/wbaas-deploy-staging
+      -
+        name: Check out `wmde/wbaas-deploy` repository in production child directory
+        if: github.event_name != 'pull_request'
+        uses: actions/checkout@v3.5.3
+        with:
+          repository: wmde/wbaas-deploy
+          path: ./repos/wbaas-deploy-production
+      -
         name: Update helmfile values for local, staging and production
         if: github.event_name != 'pull_request'
         id: update-helmfile-values
