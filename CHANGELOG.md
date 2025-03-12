@@ -1,5 +1,9 @@
 # widar
 
+## March 2025
+- 1.4
+  - Install extra tls CA cert if it exists
+
 ## Feburary 2022
 - 1.3 - Update OAuth consumer version in magnustools
 
