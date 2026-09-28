@@ -1,4 +1,4 @@
-FROM composer:2.8 as composer
+FROM composer:2.8 AS composer
 
 WORKDIR /installing
 COPY ./ /installing
